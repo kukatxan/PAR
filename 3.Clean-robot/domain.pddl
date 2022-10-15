@@ -18,6 +18,5 @@
 
         (:action push
          :parameters (?box ?from ?to)
-         :precondition (and (adj ?from ?to) (robot-at ?from) (not (is-empty ?from)) (is-empty ?to) (is-dirty ?from) (not(is-clean ?from)))
-         :effect (and (not (box-at ?box ?from)) (box-at ?box ?to) (is-empty ?from)))
-    )
+         :precondition (and (box-at ?box ?from) (adj ?from ?to) (robot-at ?from) (not (is-empty ?from)) (is-empty ?to) (is-dirty ?from))
+         :effect (and (not (box-at ?box ?from)) (box-at ?box ?to) (is-empty ?from)(not (is-empty ?to)))))
