@@ -1,67 +1,23 @@
 (define (domain CleanerRobotTask)
-        (:requirements :typing :strips)
-        (:predicates
-            
-            (at ?what ?square) ;ok
-            (adj ?from ?to);ok
-            (is-box ?box) ;ok
-            (is-robot ?who)      ;ok
-            (box-in ?square) ;ok
-            (is-clean ?square) ;ok
-            (is-dirty ?square);ok
-            
-            
-        )
-    (:action move_to_office
-        :parameters (?from ?who ?to)
-        :precondition (and
-                            (is-robot ?who)
-                            (at ?who ?from)
-                            (adj ?from ?to)
-                  
-            
-                        )
-        :effect (and (not (at ?who ?from)) (at ?who ?to))
-    )
+        (:requirements :strips :equality)
+        (:predicates    (robot-at ?x)
+                        (box-at ?x ?y)
+                        (is-dirty ?x)
+                        (is-clean ?x)
+                       (is-empty ?x)
+                        (adj ?x ?y))
+        (:action clean
+         :parameters (?ofi)
+         :precondition (and (robot-at ?ofi) (is-empty ?ofi) (is-dirty ?ofi) )
+         :effect (and (not (is-dirty ?ofi)) (is-clean ?ofi)))
 
-        
-        
-        
-        
-    (:action clean-office
-        :parameters (?square ?who ?box)
-        ;precondition with not clean if are a box in the square
-        :precondition (and
-                            (is-robot ?who)
-                            (is-box ?box)
-                            (at ?who ?square)
-                            (is-dirty ?square)
-                            (not (box-in ?square))
-                         
-                        )
-        :effect (and (not (is-dirty ?square)))
+        (:action move-robot
+         :parameters (?from ?to)
+         :precondition (and (robot-at ?from) (adj ?from ?to))
+         :effect (and (not(robot-at ?from))(robot-at ?to)))
 
+        (:action push
+         :parameters (?box ?from ?to)
+         :precondition (and (adj ?from ?to) (robot-at ?from) (not (is-empty ?from)) (is-empty ?to) (is-dirty ?from) (not(is-clean ?from)))
+         :effect (and (not (box-at ?box ?from)) (box-at ?box ?to) (is-empty ?from)))
     )
-    ;    :parameters (?who ?square ?box)
-    ;    :precondition (and  (is-dirty ?square)
-                            ;precondition to not clean if are a box in the square
-                            ;(not (box-in ?box ?square))
-    ;                        (box-in ?box ?square)
-    ;                        (is-robot ?who) 
-    ;                        (at ?who ?square))
-    ;    :effect (and  (not (is-dirty ?square)))
-    ;)
-
-    (:action push_box
-        :parameters (?from ?box ?to ?who ?square)
-        :precondition (and
-                            (at ?who ?square)
-                            (is-robot ?who)
-                            ;(at ?who ?from)
-                            (adj ?from ?to)
-                            (box-in ?square)
-                            
-                        ) 
-        :effect (and (not (box-in ?from)) (box-in ?to))
-    )
-)
